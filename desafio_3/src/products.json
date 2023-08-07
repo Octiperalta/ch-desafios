@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "name": "Arroz"
+    },
+    {
+        "id": 2,
+        "name": "Fideos"
+    },
+    {
+        "id": 3,
+        "name": "Agua"
+    },
+    {
+        "id": 4,
+        "name": "Pan"
+    },
+    {
+        "id": 5,
+        "name": "Atun"
+    },
+    {
+        "id": 6,
+        "name": "Bananas"
+    },
+    {
+        "id": 7,
+        "name": "Fernet"
+    },
+    {
+        "id": 8,
+        "name": "Cafe"
+    },
+    {
+        "id": 9,
+        "name": "Azucar"
+    },
+    {
+        "id": 10,
+        "name": "Galletitas"
+    },
+    {
+        "id": 11,
+        "name": "Cebollas"
+    },
+    {
+        "id": 12,
+        "name": "Coca Cola"
+    },
+    {
+        "id": 13,
+        "name": "Dulce de Leche"
+    },
+    {
+        "id": 14,
+        "name": "Mermelada"
+    }
+]
