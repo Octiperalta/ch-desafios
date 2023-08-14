@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "title": "Cafe",
+        "description": "Esto es una descripcion",
+        "code": "ABC456",
+        "price": 28,
+        "status": true,
+        "stock": 5,
+        "category": "Categoria 2",
+        "thumbnails": []
+    },
+    {
+        "id": 3,
+        "title": "Atun",
+        "description": "Esto es una descripcion",
+        "code": "ABC789",
+        "price": 1808,
+        "status": false,
+        "stock": 2,
+        "category": "Esta es otra caregoria nueva",
+        "thumbnails": []
+    }
+]
