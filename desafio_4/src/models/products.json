@@ -1,1 +1,57 @@
-[{"id":1,"title":"tele","description":"nueva tela","code":"asdasd","price":"120000","status":true,"stock":"123","category":"PC","thumbnails":[]}]
+[
+    {
+        "id": 1,
+        "title": "tele",
+        "description": "nueva tela",
+        "code": "asdasd",
+        "price": "120000",
+        "status": true,
+        "stock": "123",
+        "category": "PC",
+        "thumbnails": []
+    },
+    {
+        "id": 1,
+        "title": "cama",
+        "description": "es una cama",
+        "code": "asd123123",
+        "price": "500000",
+        "status": true,
+        "stock": "12",
+        "category": "CELULAR",
+        "thumbnails": []
+    },
+    {
+        "id": "fc830597-e3f3-4f7e-a668-5971f1b5e64f",
+        "title": "Iphone 11",
+        "description": "nuevo producto",
+        "code": "apple123",
+        "price": "100000",
+        "status": true,
+        "stock": "2",
+        "category": "CELULAR",
+        "thumbnails": []
+    },
+    {
+        "id": "0d318c9a-d5cf-4fb5-9e57-ad0b64383162",
+        "title": "PS5",
+        "description": "otro ",
+        "code": "sony123",
+        "price": "500000",
+        "status": true,
+        "stock": "1",
+        "category": "CELULAR",
+        "thumbnails": []
+    },
+    {
+        "id": "0bbfba16-7319-4870-9da7-ba9599105820",
+        "title": "ps4",
+        "description": "otra play",
+        "code": "play123",
+        "price": "50000",
+        "status": true,
+        "stock": "5",
+        "category": "GAMING",
+        "thumbnails": []
+    }
+]

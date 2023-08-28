@@ -1,18 +1,19 @@
 import { promises as fs } from "fs";
+import { v4 as uuid } from "uuid";
 
 export default class ProductManager {
   constructor(path) {
     this.path = path;
   }
 
-  static getNextID() {
+  /*static getNextID() {
     if (!this.currentID) {
       this.currentID = 1;
     } else {
       this.currentID++;
     }
     return this.currentID;
-  }
+  }*/
 
   async getProducts(limit) {
     const products = JSON.parse(await fs.readFile(this.path, "utf-8"));
@@ -49,7 +50,7 @@ export default class ProductManager {
       return { succesful: false, message: "Producto ya existente" };
 
     const newProduct = {
-      id: ProductManager.getNextID(),
+      id: uuid(),
       title,
       description,
       code,

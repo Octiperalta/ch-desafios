@@ -67,3 +67,9 @@ app.get("/static", async (req, res) => {
     hayProductos: products.length > 0,
   });
 });
+
+app.get("/static/home", async (req, res) => {
+  const products = await PM.getProducts();
+
+  res.render("home", { products });
+});
