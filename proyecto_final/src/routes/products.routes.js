@@ -1,34 +1,82 @@
 import { Router } from "express";
 import ProductManager from "../controllers/productManager.js";
+import productModel from "../models/products.models.js";
 
 const productsRouter = Router();
-const PM = new ProductManager("src/models/products.json");
 
 productsRouter.get("/", async (req, res) => {
-  const { limit } = req.query;
-  const products = await PM.getProducts(limit);
+  const {
+    limit = 10,
+    page = 1,
+    sort = null,
+    category = null,
+    status = null,
+  } = req.query;
+  const paginateOptions = {
+    page: page,
+    limit: limit,
+    sort: sort && { price: sort },
+  };
+  let query = {};
 
-  res.status(200).send({
-    status: "OK",
-    message: "Listado de productos obtenido exitosamente.",
-    data: products,
-  });
+  if (status) query.status = status;
+  if (category) query.category = category;
+
+  try {
+    const result = await productModel.paginate({ ...query }, paginateOptions);
+    const {
+      docs: products,
+      totalPages,
+      prevPage,
+      nextPage,
+      hasPrevPage,
+      hasNextPage,
+    } = result;
+
+    const url = req.originalUrl.replace(/&?page=\d+/, "");
+    const prevLink = hasPrevPage ? `${url}&page=${prevPage}` : null;
+    const nextLink = hasNextPage ? `${url}&page=${nextPage}` : null;
+
+    res.status(200).send({
+      status: "OK",
+      payload: products,
+      totalPages,
+      prevPage,
+      nextPage,
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: "An error occured while searching for products",
+      error: `${err}`,
+    });
+  }
 });
 
 productsRouter.get("/:pid", async (req, res) => {
-  const pid = parseInt(req.params.pid);
-  const product = await PM.getProductById(pid);
+  const { pid } = req.params;
+  try {
+    const product = await productModel.findById(pid);
 
-  if (product) {
-    res.status(200).send({
-      status: "OK",
-      message: `Producto con ID ${pid} obtenido exitosamente`,
-      data: product,
+    // Entiendo que no es necesario implementar un condicional IF ya que en caso de no encontrar el producto, va directo al CATCH
+    // if (product) {
+    res.status(200).json({
+      status: "success",
+      payload: product,
     });
-  } else {
-    res.status(404).send({
-      status: "ERROR",
-      message: "No se encontro un producto con el ID indicado.",
+    // } else {
+    // console.log(product);
+    // res.status(404).json({ status: "error", message: "Product not found" });
+    // }
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: "An error occured while searching the product",
+      error: `${err}`,
     });
   }
 });
@@ -38,33 +86,40 @@ productsRouter.post("/", async (req, res) => {
     description,
     code,
     price,
-    status = true,
     stock,
     category,
     thumbnails,
+    status = true,
   } = req.body;
 
   if (title && description && code && price && stock && category) {
-    const result = await PM.addProduct(
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails
-    );
+    try {
+      const result = await productModel.create({
+        title,
+        description,
+        stock,
+        code,
+        status,
+        price,
+        category,
+      });
 
-    if (result.succesful) {
-      res.status(200).send({ status: "OK", message: result.message });
-    } else {
-      res.status(400).send({ status: "ERROR", message: result.message });
+      res.status(200).json({
+        status: "success",
+        message: "Product succesfully created",
+        payload: result,
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: "error",
+        message: "An error occured while tyring to create the product.",
+        error: `${err}`,
+      });
     }
   } else {
-    res.status(400).send({
-      status: "ERROR",
-      message: "Todos los campos son obligatorios.",
+    res.status(400).json({
+      status: "error",
+      message: "All fields must be completed.",
     });
   }
 });
@@ -83,13 +138,22 @@ productsRouter.put("/:pid", async (req, res) => {
 });
 
 productsRouter.delete("/:pid", async (req, res) => {
-  const pid = parseInt(req.params.pid);
-  const result = await PM.deleteProduct(pid);
+  const { pid } = req.params;
 
-  if (result.succesful) {
-    res.status(200).send({ status: "OK", message: result.message });
-  } else {
-    res.status(400).send({ status: "ERROR", message: result.message });
+  try {
+    const result = await productModel.findByIdAndDelete(pid);
+
+    res.status(200).json({
+      status: "success",
+      message: "Product succesfully deleted",
+      payload: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: "An error occured while trying to delete the product",
+      errorr: `${err}`,
+    });
   }
 });
 
