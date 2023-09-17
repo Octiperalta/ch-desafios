@@ -1,7 +1,6 @@
 import { Router } from "express";
 import CartManager from "../controllers/cartManager.js";
 import cartModel from "../models/carts.models.js";
-import { Schema } from "mongoose";
 
 const cartsRouter = Router();
 const CM = new CartManager("src/models/carts.json");
@@ -66,34 +65,6 @@ cartsRouter.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
-cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
-  const { cid, pid } = req.params;
-
-  try {
-    const result = await cartModel.findByIdAndUpdate(
-      { _id: cid },
-      { $pull: { products: { id_prod: pid } } },
-      { upsert: false, new: true }
-    );
-
-    // ! No encuentro la forma de controlar este tipo de errores, ya que siempre que no encuentra por ID va por el lado del catch
-    /* 
-      if (!result)
-      res
-    .status(404)
-    .json({ status: "error", message: "Cart or product not found" });
-    */
-
-    res.status(200).json({ status: "success", payload: result });
-  } catch (err) {
-    res.status(400).json({
-      status: "error",
-      message: "An error  occured while trying to delete the product",
-      error: `${err}`,
-    });
-  }
-});
-
 cartsRouter.put("/:cid", async (req, res) => {
   const { cid } = req.params;
   const { products: newProducts } = req.body;
@@ -146,6 +117,54 @@ cartsRouter.put("/:cid/products/:pid", async (req, res) => {
   }
 });
 
-cartsRouter.delete("/:cid", async (req, res) => {});
+cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+
+  try {
+    const result = await cartModel.findByIdAndUpdate(
+      { _id: cid },
+      { $pull: { products: { id_prod: pid } } },
+      { upsert: false, new: true }
+    );
+
+    // ! No encuentro la forma de controlar este tipo de errores, ya que siempre que no encuentra por ID va por el lado del catch
+    /* 
+        if (!result)
+        res
+      .status(404)
+      .json({ status: "error", message: "Cart or product not found" });
+      */
+
+    res.status(200).json({ status: "success", payload: result });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: "An error  occured while trying to delete the product",
+      error: `${err}`,
+    });
+  }
+});
+
+cartsRouter.delete("/:cid", async (req, res) => {
+  const { cid } = req.params;
+
+  try {
+    const result = await cartModel.findByIdAndUpdate(
+      cid,
+      {
+        $set: { products: [] },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ status: "success", payload: result });
+  } catch (err) {
+    res.status(404).json({
+      status: "error",
+      message: "An error occured while trying to delete",
+      error: `${err}`,
+    });
+  }
+});
 
 export default cartsRouter;
