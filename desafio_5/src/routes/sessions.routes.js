@@ -3,18 +3,9 @@ import userModel from "../models/users.models.js";
 
 const sessionsRouter = Router();
 
-sessionsRouter.get("/", (req, res) => {
-  if (req.session.logged) {
-    console.log(req.session);
-    return res.redirect("/products");
-  }
-
-  res.redirect("/login");
-});
 sessionsRouter.get("/login", (req, res) => {
   if (req.session.logged) {
-    console.log(req.session);
-    return res.redirect("/products");
+    return res.redirect("/static/products");
   }
 
   res.render("login");
@@ -24,7 +15,7 @@ sessionsRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (req.session.logged) {
-    return res.redirect("/products");
+    return res.redirect("/static/products");
   }
 
   try {
@@ -36,7 +27,7 @@ sessionsRouter.post("/login", async (req, res) => {
         req.session.userRole = user.role;
         req.session.logged = true;
 
-        res.redirect("/products");
+        res.redirect("/static/products");
       } else {
         res.status(401).send({ resultado: "Unauthorized", message: user });
       }
@@ -44,22 +35,16 @@ sessionsRouter.post("/login", async (req, res) => {
       res.status(404).send({ resultado: "Not Found", message: user });
     }
   } catch (error) {
-    // res
-    //   .status(400)
-    //   .send({ error: `There was an error while trying to login in: ${error}` });
     res.render("login", { error: error });
   }
 });
 
 sessionsRouter.post("/logout", (req, res) => {
-  console.log("LOGOUT");
-  console.log(req.session);
-
   if (req.session.logged) {
     req.session.destroy();
   }
 
-  res.redirect("login");
+  res.redirect("/static/login");
 });
 
 export default sessionsRouter;

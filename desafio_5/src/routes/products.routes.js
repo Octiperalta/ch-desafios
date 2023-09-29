@@ -1,10 +1,9 @@
 import { Router } from "express";
-import ProductManager from "../controllers/productManager.js";
 import productModel from "../models/products.models.js";
 
 const productsRouter = Router();
 
-productsRouter.get("/api/", async (req, res) => {
+productsRouter.get("/", async (req, res) => {
   const {
     limit = 10,
     page = 1,
@@ -57,44 +56,38 @@ productsRouter.get("/api/", async (req, res) => {
   }
 });
 
-productsRouter.get("/", async (req, res) => {
-  console.log(req.session);
-  const { username, userRole } = req.session;
-  const products = await productModel.find();
+// productsRouter.get("/", async (req, res) => {
+//   console.log(req.session);
+//   const { username, userRole } = req.session;
+//   const products = await productModel.find();
 
-  // Tuve que hacer esto porque no podia mostrar las propiedes de los objetos a traves de handlebars
-  const array = {
-    products: products.map(prod => ({
-      title: prod.title,
-      description: prod.description,
-      category: prod.category,
-      price: prod.price,
-      stock: prod.stock,
-      id: prod._id,
-    })),
-  };
+//   // Tuve que hacer esto porque no podia mostrar las propiedes de los objetos a traves de handlebars
+//   const array = {
+//     products: products.map(prod => ({
+//       title: prod.title,
+//       description: prod.description,
+//       category: prod.category,
+//       price: prod.price,
+//       stock: prod.stock,
+//       id: prod._id,
+//     })),
+//   };
 
-  res.render("products", {
-    user: { username, userRole },
-    productos: array.products,
-  });
-});
+//   res.render("products", {
+//     user: { username, userRole },
+//     productos: array.products,
+//   });
+// });
 
 productsRouter.get("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
     const product = await productModel.findById(pid);
 
-    // Entiendo que no es necesario implementar un condicional IF ya que en caso de no encontrar el producto, va directo al CATCH
-    // if (product) {
     res.status(200).json({
       status: "success",
       payload: product,
     });
-    // } else {
-    // console.log(product);
-    // res.status(404).json({ status: "error", message: "Product not found" });
-    // }
   } catch (err) {
     res.status(400).json({
       status: "error",

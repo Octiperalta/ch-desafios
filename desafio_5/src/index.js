@@ -11,7 +11,8 @@ import path from "path";
 import session from "express-session";
 import MongoStorage from "connect-mongo";
 import cookieParser from "cookie-parser";
-import userRouter from "./routes/users.routes.js";
+import usersRouter from "./routes/users.routes.js";
+import handlebarsRouter from "./routes/views.routes.js";
 
 const PORT = 8080;
 const app = express();
@@ -45,11 +46,12 @@ app.use(
 );
 
 // * Routes
-// No termine de entender como debian ser las ruta para cada vista, la consigna tampoco es clara
-app.use("/", sessionsRouter);
-app.use("/products", productsRouter);
+app.use("/static", express.static(path.join(__dirname, "/public")));
+app.use("/static", handlebarsRouter);
+app.use("/api/sessions", sessionsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/users", usersRouter);
 app.use("/api/carts", cartsRouter);
-app.use("/register", userRouter);
 
 app.use("*", (req, res) => {
   res.send({ status: "error", message: "Not found" });
