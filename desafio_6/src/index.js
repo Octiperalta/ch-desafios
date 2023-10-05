@@ -17,6 +17,7 @@ import passport from "passport";
 import initializePassport from "./config/passport.js";
 
 const PORT = 8080;
+// const PORT = 4000;
 const app = express();
 
 // * Database connection

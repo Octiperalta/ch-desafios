@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import userModel from "../models/users.models.js";
 import { createHash, validatePassword } from "../utils/bcrypt.js";
+import GitHubStrategy from "passport-github2";
 const LocalStrategy = local.Strategy;
 
 const initializePassport = () => {
@@ -59,7 +60,40 @@ const initializePassport = () => {
     )
   );
 
-  // *Sesiones
+  // * Defino el Login con GITHUB
+  passport.use(
+    "github",
+    new GitHubStrategy(
+      {
+        clientID: process.env.GH_CLIENT_ID,
+        clientSecret: process.env.GH_CLIENT_SECRET,
+        callbackURL: process.env.GH_CALLBACK_URL,
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const user = await userModel.findOne({ email: profile._json.email });
+
+          if (user) {
+            return done(null, false);
+          } else {
+            const newUser = await userModel.create({
+              first_name: profile._json.name,
+              last_name: " ",
+              email: profile._json.email,
+              age: 18, // Edad por defecto
+              password: "default_password",
+            });
+
+            done(null, newUser);
+          }
+        } catch (err) {
+          done(err);
+        }
+      }
+    )
+  );
+
+  // * Sesiones
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });

@@ -50,6 +50,30 @@ sessionsRouter.post(
   }
 );
 
+sessionsRouter.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user: email"] }),
+  async (req, res) => {
+    console.log("Se creo el usuario correctamente");
+
+    res
+      .status(200)
+      .send({
+        status: "OK",
+        mensaje: "Se realizo el registo con GitHub correctamente!",
+      });
+  }
+);
+
+sessionsRouter.get(
+  "/githubSession",
+  passport.authenticate("github"),
+  async (req, res) => {
+    req.session.user = req.user;
+    res.status(200).send({ mensaje: "Sesion creada correctamente" });
+  }
+);
+
 sessionsRouter.post("/logout", (req, res) => {
   if (req.session.logged) {
     // ! No estoy pudiendo borrar la sesion que se crea en Mongo Atlas al realizar el logout
