@@ -21,12 +21,9 @@ const cartSchema = new Schema({
   },
 });
 
-// ! No puded hacer que funcione
-/*
-cartSchema.pre("findById", function () {
+cartSchema.pre("findOne", function () {
   this.populate("products.id_prod");
 });
-*/
 
 const cartModel = model("carts", cartSchema);
 
